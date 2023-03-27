@@ -18,7 +18,8 @@ def check_gradient(f, x, delta=1e-5, tol=1e-4):
     
     assert isinstance(x, np.ndarray)
     assert x.dtype == np.float
-    
+
+    orig_x = x.copy()
     fx, analytic_grad = f(x)
     assert np.all(np.isclose(orig_x, x, tol)), "Functions shouldn't modify input variables"
 
