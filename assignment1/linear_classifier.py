@@ -99,7 +99,6 @@ def l2_regularization(W, reg_strength):
     #  Your final implementation shouldn't have any loops
     loss = reg_strength * np.sum(np.square(W))
     grad = reg_strength * 2 * W
-
     return loss, grad
     
 
@@ -171,9 +170,9 @@ class LinearSoftmaxClassifier():
 
                 self.W -= grad * learning_rate
                 loss_history.append(loss)
-                print("Epoch %i, loss: %f" % (epoch, loss))
-
+            # print("Epoch %i, loss: %f" % (epoch, loss))
         return loss_history
+
 
     def predict(self, X):
         '''
@@ -185,19 +184,7 @@ class LinearSoftmaxClassifier():
         Returns:
           y_pred, np.array of int (test_samples)
         '''
-        y_pred = np.zeros(X.shape[0], dtype=np.int)
-
         # TODO Implement class prediction
         #  Your final implementation shouldn't have any loops
-        raise Exception("Not implemented!")
-
+        y_pred = np.argmax(softmax(np.dot(X, self.W)), axis=-1)
         return y_pred
-
-
-
-                
-                                                          
-
-            
-
-                
