@@ -129,11 +129,9 @@ class FullyConnectedLayer:
 
     def backward(self, d_out):
         d_result = np.dot(d_out, self.W.value.T)
-        dW = np.dot(self.X.T, d_out)
-        dB = np.dot(np.ones((1, d_out.shape[0])), d_out)
+        self.W.grad += np.dot(self.X.T, d_out)
+        self.B.grad += np.dot(np.ones((1, d_out.shape[0])), d_out)
 
-        self.W.grad += dW
-        self.B.grad += dB
         return d_result
 
     def params(self):
@@ -151,7 +149,6 @@ class ConvolutionalLayer:
         filter_size, int - size of the conv filter
         padding, int - number of 'pixels' to pad on each side
         '''
-
         self.filter_size = filter_size
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -164,7 +161,7 @@ class ConvolutionalLayer:
         batch_size, height, width, channels = X.shape
 
         X_padding = np.zeros(shape=(batch_size, height + 2*self.padding,
-                                 width + 2*self.padding, channels))
+                                    width + 2*self.padding, channels))
         X_padding[:, self.padding: height+self.padding, self.padding: width+self.padding, :] = X
         self.X = X_padding
 
@@ -180,7 +177,6 @@ class ConvolutionalLayer:
                 layer_out[:, x:x+self.filter_size, y:y+self.filter_size, :] = (receptive_filed.reshape(
                     (batch_size, -1)).dot(self.W.value.reshape((-1, self.out_channels))) +
                     self.B.value).reshape(batch_size, 1, 1, self.out_channels)
-
         return layer_out
 
     def backward(self, d_out):
@@ -253,7 +249,7 @@ class MaxPoolingLayer:
                 mplayer_out[:, x, y, :] = np.max(comp_field, axis=(1, 2))
         return mplayer_out
 
-    # TODO: Implement maxpool backward pass
+    # TODO: Implement MaxPool backward pass
     def backward(self, d_out):
         _, out_height, out_width, _ = d_out.shape
         grad = np.zeros_like(self.X)
@@ -261,8 +257,8 @@ class MaxPoolingLayer:
 
         for x in range(out_height):
             for y in range(out_width):
-                grad[:, x * step: x * step + self.pool_size, y * step: y * step + self.pool_size, :] += \
-                    d_out[:, x:x + 1, y:y + 1, :] * self.masks[(x, y)]
+                grad[:, x*step: x*step + self.pool_size, y*step: y*step + self.pool_size, :] += \
+                    d_out[:, x:x+1, y:y+1, :] * self.masks[(x, y)]
         return grad
 
     def params(self):
