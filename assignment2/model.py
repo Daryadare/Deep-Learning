@@ -86,5 +86,5 @@ class TwoLayerNet:
         result = {"fcl1_W": self.layers[0].params()['W'],
                   "fcl1_B": self.layers[0].params()['B'],
                   "fcl2_W": self.layers[2].params()['W'],
-                  "fcl2_B": self.layers[2].params()['B'], }
+                  "fcl2_B": self.layers[2].params()['B']}
         return result
